@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* 좌측 고정 광고 */}
         <div style={{
           position: 'fixed',
-          left: 5,
+          left: 9,
           top: 30,
           height: '100vh',
           width: 160,
@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }}>
           <ins className="kakao_ad_area"
             style={{ display: 'block', width: 160, height: 600 }}
-            data-ad-unit="DAN-dw0XaXYLeei0bqYK"
+            data-ad-unit="DAN-JJ0v6l6xiVNGlSU6"
             data-ad-width="160"
             data-ad-height="600"
           ></ins>
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }}>
           <ins className="kakao_ad_area"
             style={{ display: 'block', width: 160, height: 600 }}
-            data-ad-unit="DAN-kTq9g9C4bXqSwbOb"
+            data-ad-unit="DAN-NIKAdAgrHCQMaahW"
             data-ad-width="160"
             data-ad-height="600"
           ></ins>
