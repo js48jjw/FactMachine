@@ -188,7 +188,7 @@ export default function HomePage() {
         <div className="w-full bg-white rounded-3xl shadow-xl px-8 py-5 flex flex-col items-center">
           {/* 입력창+음성모드 버튼 한 줄에 배치 */}
           <div className="w-full flex items-center gap-2">
-<<<<<<< HEAD
+
             <button
               className="flex items-center justify-center w-12 h-12 rounded-full shadow-sm border bg-gray-200 transition hover:bg-gray-300"
               onClick={resetConversation}
@@ -197,8 +197,8 @@ export default function HomePage() {
             >
               <span className="text-xl font-bold text-gray-700">+</span>
             </button>
-=======
->>>>>>> 40b0fed419a732635431e766346acd7c2a963719
+
+
             <div className="flex-1">
               <MessageInput onSend={handleSend} disabled={loading} />
             </div>
