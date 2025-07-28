@@ -20,6 +20,12 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [voiceMode, setVoiceMode] = useState(false);
 
+  // 대화 이력 초기화 함수
+  const resetConversation = () => {
+    setMessages([]);
+    setMsgId(0);
+    setFeedback({});
+  };
   // 음성모드 훅
   const { transcript, setTranscript, speak } = useVoice();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -55,14 +61,15 @@ export default function HomePage() {
   // Gemini API 연동
   const handleSend = async (text: string) => {
     const userMsg: ChatMessage = { id: msgId, text, sender: "user" };
-    setMessages(prev => [...prev, userMsg]);
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     setMsgId(id => id + 1);
     setLoading(true);
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text, history: newMessages })
       });
       const data = await res.json();
       const botMsg: ChatMessage = {
@@ -181,6 +188,17 @@ export default function HomePage() {
         <div className="w-full bg-white rounded-3xl shadow-xl px-8 py-5 flex flex-col items-center">
           {/* 입력창+음성모드 버튼 한 줄에 배치 */}
           <div className="w-full flex items-center gap-2">
+<<<<<<< HEAD
+            <button
+              className="flex items-center justify-center w-12 h-12 rounded-full shadow-sm border bg-gray-200 transition hover:bg-gray-300"
+              onClick={resetConversation}
+              type="button"
+              title="새로운 대화"
+            >
+              <span className="text-xl font-bold text-gray-700">+</span>
+            </button>
+=======
+>>>>>>> 40b0fed419a732635431e766346acd7c2a963719
             <div className="flex-1">
               <MessageInput onSend={handleSend} disabled={loading} />
             </div>
