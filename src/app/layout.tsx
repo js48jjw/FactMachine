@@ -6,8 +6,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <head>
+        <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#2563eb" />
+        <meta name="description" content="논리적이고 직설적인 AI 챗봇, 팩트폭격기 (Fact Machine)" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="shortcut icon" href="/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png" />
         <title>팩트폭격기!</title>
       </head>
       <body>
