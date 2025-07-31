@@ -15,6 +15,8 @@ export default function HomePage() {
   const [copyNotice, setCopyNotice] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
+  const lastSpokenMessageId = useRef<number | null>(null);
+
   const { isListening, transcript, setTranscript, startListening, stopListening, speak, stopSpeaking } = useVoice();
 
   const resetConversation = () => {
@@ -24,6 +26,7 @@ export default function HomePage() {
     stopListening();
     stopSpeaking(); // 음성 모드 초기화 시 음성 합성 중단
     setVoiceMode(false);
+    lastSpokenMessageId.current = null; // 대화 초기화 시 마지막 음성 메시지 ID도 초기화
   };
 
   const handleSend = useCallback(async (text: string) => {
@@ -69,9 +72,16 @@ export default function HomePage() {
 
   useEffect(() => {
     if (messages.length > 0 && messages[messages.length - 1].sender === "bot") {
-      const botMessage = messages[messages.length - 1].text;
+      const currentBotMessage = messages[messages.length - 1];
+      if (currentBotMessage.id === lastSpokenMessageId.current) {
+        // 이 메시지는 이미 음성으로 출력되었으므로 다시 출력하지 않음
+        return;
+      }
+
+      const botMessageText = currentBotMessage.text;
       // 마크다운 제거
-      const textToSpeak = botMessage.replace(/(\*\*|\*|_|`|~|#)/g, "");
+      const textToSpeak = botMessageText.replace(/(\*\*|\*|_|`|~|#)/g, "");
+      console.log("Voice mode status before speaking:", voiceMode);
       if (voiceMode) {
         speak(textToSpeak, () => {
           if (voiceMode) {
@@ -80,6 +90,7 @@ export default function HomePage() {
             }, 500); // 0.5초 지연
           }
         });
+        lastSpokenMessageId.current = currentBotMessage.id; // 현재 메시지를 마지막으로 음성 출력된 메시지로 기록
       }
     }
   }, [messages, speak, startListening]); // eslint-disable-next-line react-hooks/exhaustive-deps
