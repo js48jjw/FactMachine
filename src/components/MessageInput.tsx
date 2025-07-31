@@ -19,7 +19,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ value, onChange, onSend, di
   };
 
   useEffect(() => {
-    if (!disabled) {
+    const isMobile = window.innerWidth <= 768;
+    if (!disabled && !isMobile) {
       textareaRef.current?.focus();
     }
   }, [disabled]);
@@ -35,7 +36,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ value, onChange, onSend, di
         onKeyDown={handleKeyDown}
         disabled={disabled}
         rows={1}
-        autoFocus
+        autoFocus={typeof window !== 'undefined' && window.innerWidth > 768}
       />
       <button
         className="px-4 py-2 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition disabled:bg-purple-400 disabled:cursor-not-allowed"

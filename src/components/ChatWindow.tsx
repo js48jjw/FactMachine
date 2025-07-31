@@ -125,17 +125,17 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
       {/* 중앙 입력 카드 */}
       <div className="w-full max-w-2xl fixed bottom-0 left-1/2 -translate-x-1/2 pb-8 flex flex-col items-center z-10">
-        <div className="w-full bg-white rounded-3xl shadow-xl px-8 py-5 flex flex-col items-center">
+        <div className="w-full bg-white rounded-3xl shadow-xl px-2 sm:px-8 py-5 flex flex-col items-center">
           <div className="w-full flex items-center gap-2">
             <button
-              className="flex items-center justify-center w-12 h-12 rounded-full shadow-sm border bg-gray-200 transition hover:bg-gray-300"
+              className="flex items-center justify-center w-12 h-12 rounded-full shadow-sm border bg-gray-200 transition hover:bg-gray-300 flex-shrink-0"
               onClick={resetConversation}
               type="button"
               title="새로운 대화"
             >
               <span className="text-xl font-bold text-gray-700">+</span>
             </button>
-            <div className="flex-1">
+            <div className="flex-grow min-w-0">
               <MessageInput
                 value={inputValue}
                 onChange={onInputChange}
@@ -144,8 +144,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               />
             </div>
             <button
-              className={`flex items-center justify-center w-12 h-12 rounded-full shadow-sm border transition
-                ${isListening ? "bg-red-500 animate-pulse" : voiceMode ? "bg-purple-600" : "bg-black"}`}
+              className={`flex items-center justify-center w-12 h-12 rounded-full shadow-sm border transition flex-shrink-0
+                ${isListening ? "bg-red-500 animate-pulse" : voiceMode ? "bg-purple-600" : "bg-black"}`}}
               onClick={onVoiceInput}
               type="button"
               title="음성모드"
