@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from "react";
-
+import TitleHeader from "../components/TitleHeader";
 import ChatWindow from "../components/ChatWindow";
 import { useVoice } from "../hooks/useVoice";
 import type { Message } from "../components/ChatWindow";
@@ -108,7 +108,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-start">
       <div className="w-full flex flex-col items-center mt-12 mb-8">
-        
+      <TitleHeader />
       </div>
       <ChatWindow
         messages={messages}
