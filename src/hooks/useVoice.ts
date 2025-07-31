@@ -117,12 +117,15 @@ export function useVoice() {
     }
   };
 
-  const speak = (text: string): void => {
+  const speak = (text: string, onEnd?: () => void): void => {
     if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
       return;
     }
     const utter = new window.SpeechSynthesisUtterance(text);
     utter.lang = "ko-KR";
+    if (onEnd) {
+      utter.onend = onEnd;
+    }
     window.speechSynthesis.speak(utter);
   };
 

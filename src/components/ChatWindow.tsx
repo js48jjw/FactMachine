@@ -1,5 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import MessageInput from "./MessageInput";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import Spinner from "./ui/Spinner";
 
 export interface Message {
   id: number;
@@ -10,21 +13,36 @@ export interface Message {
 interface ChatWindowProps {
   messages: Message[];
   onSend: (message: string) => void;
-  inputDisabled?: boolean;
-  onVoiceInput?: () => void;
-  isListening?: boolean;
+  loading: boolean;
+  onVoiceInput: () => void;
+  isListening: boolean;
+  voiceMode: boolean;
+  resetConversation: () => void;
+  feedback: Record<number, "like" | "dislike" | null>;
+  onLike: (id: number) => void;
+  onDislike: (id: number) => void;
+  onCopy: (text: string) => void;
+  copyNotice: boolean;
+  inputValue: string;
+  onInputChange: (value: string) => void;
 }
 
-const AVATARS = {
-  user: "🧑",
-  bot: "🤖",
-};
-const LABELS = {
-  user: "You",
-  bot: "AI",
-};
-
-const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSend, inputDisabled, onVoiceInput, isListening }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({
+  messages,
+  onSend,
+  loading,
+  onVoiceInput,
+  isListening,
+  voiceMode,
+  resetConversation,
+  feedback,
+  onLike,
+  onDislike,
+  onCopy,
+  copyNotice,
+  inputValue,
+  onInputChange,
+}) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,44 +50,122 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSend, inputDisabled
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[80vh] max-h-[90vh] w-full max-w-2xl mx-auto bg-gray-100 rounded-lg shadow-lg overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 border-b bg-gradient-to-b from-purple-100 to-white">
-        <span className="font-semibold text-lg text-purple-700">채팅</span>
-        {onVoiceInput && (
-          <button
-            className={`px-4 py-1 rounded-lg font-bold text-white transition ${isListening ? "bg-red-500" : "bg-purple-600 hover:bg-purple-700"}`}
-            onClick={onVoiceInput}
-            type="button"
-          >
-            {isListening ? "듣는 중..." : "음성모드"}
-          </button>
-        )}
-      </div>
-      <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
-        <div className="flex flex-col gap-6">
-          {messages.length === 0 ? (
-            <div className="text-center text-gray-400 mt-10 text-xl">대화를 시작해보세요!</div>
-          ) : (
-            messages.map(msg => (
-              <div key={msg.id} className="w-full">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{AVATARS[msg.sender]}</span>
-                  <span className={`text-xs font-bold ${msg.sender === "bot" ? "text-purple-600" : "text-gray-500"}`}>{LABELS[msg.sender]}</span>
-                </div>
-                <div
-                  className={`w-full rounded-xl shadow px-6 py-5 ${msg.sender === "bot" ? "bg-purple-50" : "bg-white"} text-lg leading-relaxed`}
-                  style={{ minHeight: "3.5rem" }}
-                >
-                  {msg.text}
+    <>
+      {/* 대화 메시지 리스트 */}
+      <div className="flex flex-col gap-10 w-full max-w-2xl mx-auto mt-4 mb-20 pb-24">
+        {messages.length === 0 ? (
+          <div className="flex flex-1 min-h-[40vh] items-center justify-center">
+            <span className="text-center text-gray-400 text-xl">대화를 시작해보세요!</span>
+          </div>
+        ) : (
+          messages.map(msg =>
+            msg.sender === "user" ? (
+              <div key={msg.id} className="flex justify-end">
+                <div className="max-w-xl w-fit text-base text-gray-800 bg-transparent p-0">
+                  <div className="text-right text-gray-400 text-xs mb-1">나</div>
+                  <div className="font-medium break-words whitespace-pre-line">{msg.text}</div>
                 </div>
               </div>
-            ))
-          )}
-          <div ref={messagesEndRef} />
+            ) : (
+              <div key={msg.id} className="flex justify-start">
+                <div className="max-w-xl w-fit text-[17px] text-gray-900 bg-transparent p-0">
+                  <div className="text-left text-purple-600 text-xs mb-1">팩트폭격기</div>
+                  <div className="font-semibold break-words markdown-content">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+                  </div>
+                  {/* 액션 아이콘 자리 */}
+                  <div className="flex gap-4 mt-2 text-base select-none">
+                    <div className="flex gap-1">
+                      <button
+                        title="좋아요"
+                        onClick={() => onLike(msg.id)}
+                        className={`transition transform hover:scale-110 rounded-full w-10 h-10 flex items-center justify-center
+                          ${feedback[msg.id] === "like"
+                            ? "bg-yellow-100 text-yellow-600 ring-2 ring-yellow-200 scale-110"
+                            : "bg-transparent text-gray-400"}
+                        `}
+                      >👍</button>
+                      <button
+                        title="싫어요"
+                        onClick={() => onDislike(msg.id)}
+                        className={`transition transform hover:scale-110 rounded-full w-10 h-10 flex items-center justify-center
+                          ${feedback[msg.id] === "dislike"
+                            ? "bg-yellow-100 text-yellow-600 ring-2 ring-yellow-200 scale-110"
+                            : "bg-transparent text-gray-400"}
+                        `}
+                      >👎</button>
+                    </div>
+                    <button
+                      title="복사"
+                      onClick={() => onCopy(msg.text)}
+                      className="hover:scale-110 transition text-gray-400"
+                    >📋</button>
+                  </div>
+                </div>
+              </div>
+            )
+          )
+        )}
+        {/* 작성 중 로딩 UI */}
+        {loading && (
+          <div className="flex items-center gap-3 text-purple-600 text-lg font-bold animate-fade-in">
+            <Spinner size={28} />
+            <span>팩트폭격기 작성 중...</span>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* 복사 안내 메시지 */}
+      {copyNotice && (
+        <div className="fixed bottom-28 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded-lg px-4 py-2 shadow-lg opacity-90 z-50 animate-fade-in">
+          복사되었습니다
+        </div>
+      )}
+
+      {/* 중앙 입력 카드 */}
+      <div className="w-full max-w-2xl fixed bottom-0 left-1/2 -translate-x-1/2 pb-8 flex flex-col items-center z-10">
+        <div className="w-full bg-white rounded-3xl shadow-xl px-8 py-5 flex flex-col items-center">
+          <div className="w-full flex items-center gap-2">
+            <button
+              className="flex items-center justify-center w-12 h-12 rounded-full shadow-sm border bg-gray-200 transition hover:bg-gray-300"
+              onClick={resetConversation}
+              type="button"
+              title="새로운 대화"
+            >
+              <span className="text-xl font-bold text-gray-700">+</span>
+            </button>
+            <div className="flex-1">
+              <MessageInput
+                value={inputValue}
+                onChange={onInputChange}
+                onSend={() => onSend(inputValue)}
+                disabled={loading}
+              />
+            </div>
+            <button
+              className={`flex items-center justify-center w-12 h-12 rounded-full shadow-sm border transition
+                ${isListening ? "bg-red-500 animate-pulse" : voiceMode ? "bg-purple-600" : "bg-black"}`}
+              onClick={onVoiceInput}
+              type="button"
+              title="음성모드"
+            >
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="28" height="28" rx="14" fill="none" />
+                <rect x="7" y="8" width="2" height="12" rx="1" fill="white" />
+                <rect x="12" y="4" width="2" height="20" rx="1" fill="white" />
+                <rect x="17" y="8" width="2" height="12" rx="1" fill="white" />
+                <rect x="22" y="12" width="2" height="4" rx="1" fill="white" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div className="mt-4 text-gray-400 text-sm text-center">
+          팩트폭격기에게 맞더라도 당황하거나, 흥분하시면 안됩니다.<br />
+          @Fact Machine V0.1
         </div>
       </div>
-      <MessageInput onSend={onSend} disabled={inputDisabled} />
-    </div>
+    </>
   );
 };
 

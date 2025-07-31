@@ -1,53 +1,36 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 
 interface MessageInputProps {
-  onSend: (message: string) => void;
+  value: string;
+  onChange: (value: string) => void;
+  onSend: () => void;
   disabled?: boolean;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled }) => {
-  const [input, setInput] = useState("");
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleSend = () => {
-    if (input.trim() === "") return;
-    onSend(input);
-    setInput("");
-    // 포커스는 useEffect에서 처리
-  };
-
+const MessageInput: React.FC<MessageInputProps> = ({ value, onChange, onSend, disabled }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      onSend();
     }
   };
 
-  // input이 비워지거나 disabled가 false가 될 때 포커스 유지
-  useEffect(() => {
-    if (input === "" && !disabled) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 30);
-    }
-  }, [input, disabled]);
-
   return (
-    <div className="flex w-full gap-2 p-4 bg-white border-t">
+    <div className="flex w-full items-center gap-2">
       <textarea
-        ref={inputRef}
         className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none min-h-[44px] max-h-40 text-base"
         placeholder="메시지를 입력하세요..."
-        value={input}
-        onChange={e => setInput(e.target.value)}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         disabled={disabled}
         rows={1}
+        autoFocus
       />
       <button
-        className="px-4 py-2 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition"
-        onClick={handleSend}
-        disabled={disabled}
+        className="px-4 py-2 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition disabled:bg-purple-400 disabled:cursor-not-allowed"
+        onClick={onSend}
+        disabled={disabled || value.trim() === ""}
       >
         전송
       </button>
@@ -55,4 +38,4 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled }) => {
   );
 };
 
-export default MessageInput; 
+export default MessageInput;

@@ -23,7 +23,8 @@ npm run dev
 브라우저에서 [http://localhost:3000](http://localhost:3000) 접속
 
 ## 환경 변수
-- `.env.local` 파일에 아래와 같이 Gemini API 키를 설정하세요.
+- 프로젝트를 Vercel 등의 호스팅 서비스에 배포할 경우, 서비스의 환경 변수 설정 메뉴에서 `GEMINI_API_KEY`를 직접 추가해야 합니다.
+- 로컬에서 개발할 경우에만, 프로젝트 루트에 `.env.local` 파일을 생성하고 아래와 같이 키를 설정하세요.
 
 ```
 GEMINI_API_KEY=your_google_gemini_api_key

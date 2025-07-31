@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {/* 좌측 고정 광고 */}
-        <div style={{
+        <div className="ad-container" style={{
           position: 'fixed',
           left: 9,
           top: 30,
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Script src="//t1.daumcdn.net/kas/static/ba.min.js" strategy="afterInteractive" />
         </div>
         {/* 우측 고정 광고 */}
-        <div style={{
+        <div className="ad-container" style={{
           position: 'fixed',
           right: 16,
           top: 30,
