@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 interface MessageInputProps {
   value: string;
@@ -9,6 +9,20 @@ interface MessageInputProps {
 
 const MessageInput: React.FC<MessageInputProps> = ({ value, onChange, onSend, disabled }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile(); // 초기 로드 시 한 번 실행
+    window.addEventListener('resize', checkMobile); // 창 크기 변경 시마다 실행
+
+    return () => {
+      window.removeEventListener('resize', checkMobile); // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    };
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -19,13 +33,12 @@ const MessageInput: React.FC<MessageInputProps> = ({ value, onChange, onSend, di
   };
 
   useEffect(() => {
-    const isMobile = window.innerWidth <= 768;
     if (!disabled && !isMobile) {
       textareaRef.current?.focus();
     }
-  }, [disabled]);
+  }, [disabled, isMobile]);
 
-  const placeholderText = typeof window !== 'undefined' && window.innerWidth <= 768 ? "메시지 입력..." : "메시지를 입력하세요...";
+  const placeholderText = isMobile ? "메시지 입력..." : "메시지를 입력하세요...";
 
   return (
     <div className="flex w-full items-center gap-2">
