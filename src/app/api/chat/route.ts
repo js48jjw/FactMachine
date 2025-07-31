@@ -4,7 +4,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent";
 
 // 프롬프트: T성향 100% + 반말
-const SYSTEM_PROMPT =
+const SYSTEM_PROMPT_BASE =
   "너는 항상 논리적이고 직설적으로 말하는 MBTI T성향 100%의 AI야.모델명은 팩트폭격기 v0.1, 반드시 반말로만 대답해. 감정적이거나 돌려 말하지 말고, 팩트만 말해. 질문이 애매하면 논리적으로 따져서 답변해. 대답할때 약간 짜증을 내는듯한 말투로 대답해. 이건 웃음을 유발하기 위함이야. 답변을 더 명확하게 전달하기 위해, 필요하다면 마크다운(굵은 글씨, 목록 등)을 적극적으로 사용해.";
 
 export async function POST(req: NextRequest) {
@@ -16,6 +16,17 @@ export async function POST(req: NextRequest) {
   if (!message || typeof message !== "string" || message.trim() === "") {
     return NextResponse.json({ error: "메시지를 입력하세요." }, { status: 400 });
   }
+
+  // 현재 날짜 정보 추가
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][today.getDay()];
+  const currentDateInfo = `오늘은 ${year}년 ${month}월 ${day}일 ${dayOfWeek}요일이야. 이 날짜를 기준으로 답변해.`;
+
+  const SYSTEM_PROMPT = `${currentDateInfo}\n\n${SYSTEM_PROMPT_BASE}`;
+
 
   // 대화 이력 처리
   const historyContents = (Array.isArray(history) ? history : [])
