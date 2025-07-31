@@ -139,7 +139,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <MessageInput
                 value={inputValue}
                 onChange={onInputChange}
-                onSend={() => onSend(inputValue)}
+                onSend={() => { onSend(inputValue); onInputChange(""); }}
                 disabled={loading}
               />
             </div>

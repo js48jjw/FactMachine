@@ -35,7 +35,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (messages.length > 0 && messages[messages.length - 1].sender === "bot") {
-      const textToSpeak = messages[messages.length - 1].text;
+      const botMessage = messages[messages.length - 1].text;
+      // 마크다운 제거
+      const textToSpeak = botMessage.replace(/(\*\*|\*|_|`|~|#)/g, "");
       if (voiceMode) {
         speak(textToSpeak, () => {
           if (voiceMode) {
@@ -53,7 +55,6 @@ export default function HomePage() {
     const userMsg: Message = { id: msgId, text, sender: "user" };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
-    setInputValue(""); // 입력창 비우기
     setMsgId(id => id + 2);
     setLoading(true);
 
