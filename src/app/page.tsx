@@ -70,6 +70,17 @@ export default function HomePage() {
     }
   }, [transcript, handleSend, loading, setTranscript]);
 
+  // 사용자가 말을 멈췄을 때 (마이크가 꺼졌을 때) 자동으로 다시 시작
+  useEffect(() => {
+    if (voiceMode && !isListening && !loading) {
+      const timeoutId = setTimeout(() => {
+        startListening();
+      }, 100); // 짧은 지연 후 다시 시작
+
+      return () => clearTimeout(timeoutId); // 클린업
+    }
+  }, [voiceMode, isListening, loading, startListening]);
+
   useEffect(() => {
     if (messages.length > 0 && messages[messages.length - 1].sender === "bot") {
       const currentBotMessage = messages[messages.length - 1];

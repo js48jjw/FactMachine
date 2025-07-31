@@ -123,7 +123,7 @@ export function useVoice() {
     }
     const utter = new window.SpeechSynthesisUtterance(text);
     utter.lang = "ko-KR";
-    utter.rate = 1.5; // 1.1배속 설정
+    utter.rate = 1.5; // 1.5배속 설정
     if (onEnd) {
       utter.onend = onEnd;
     }
