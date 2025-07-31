@@ -238,8 +238,8 @@ input, button {
 }
 
 /* 모바일 광고 숨기기 */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .ad-container {
-    display: none;
+    display: none !important;
   }
 }
