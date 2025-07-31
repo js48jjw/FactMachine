@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TitleHeader from "../components/TitleHeader";
 import ChatWindow from "../components/ChatWindow";
 import { useVoice } from "../hooks/useVoice";
@@ -25,31 +25,7 @@ export default function HomePage() {
     setVoiceMode(false);
   };
 
-  useEffect(() => {
-    if (transcript && !loading) {
-      handleSend(transcript);
-      setTranscript("");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transcript]);
-
-  useEffect(() => {
-    if (messages.length > 0 && messages[messages.length - 1].sender === "bot") {
-      const botMessage = messages[messages.length - 1].text;
-      // 마크다운 제거
-      const textToSpeak = botMessage.replace(/(\*\*|\*|_|`|~|#)/g, "");
-      if (voiceMode) {
-        speak(textToSpeak, () => {
-          if (voiceMode) {
-            startListening();
-          }
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
-
-  const handleSend = async (text: string) => {
+  const handleSend = useCallback(async (text: string) => {
     if (text.trim() === "") return;
 
     const userMsg: Message = { id: msgId, text, sender: "user" };
@@ -81,7 +57,29 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [messages, msgId]);
+
+  useEffect(() => {
+    if (transcript && !loading) {
+      handleSend(transcript);
+      setTranscript("");
+    }
+  }, [transcript, handleSend, loading, setTranscript]);
+
+  useEffect(() => {
+    if (messages.length > 0 && messages[messages.length - 1].sender === "bot") {
+      const botMessage = messages[messages.length - 1].text;
+      // 마크다운 제거
+      const textToSpeak = botMessage.replace(/(\*\*|\*|_|`|~|#)/g, "");
+      if (voiceMode) {
+        speak(textToSpeak, () => {
+          if (voiceMode) {
+            startListening();
+          }
+        });
+      }
+    }
+  }, [messages, voiceMode, speak, startListening]);
 
   const handleVoiceInput = () => {
     const newVoiceMode = !voiceMode;
