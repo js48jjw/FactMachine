@@ -14,6 +14,7 @@ export default function HomePage() {
   const [feedback, setFeedback] = useState<Record<number, "like" | "dislike" | null>>({});
   const [copyNotice, setCopyNotice] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [isBotSpeaking, setIsBotSpeaking] = useState(false); // 봇이 말하고 있는지 여부
 
   const lastSpokenMessageId = useRef<number | null>(null);
 
@@ -26,6 +27,7 @@ export default function HomePage() {
     stopListening();
     stopSpeaking(); // 음성 모드 초기화 시 음성 합성 중단
     setVoiceMode(false);
+    setIsBotSpeaking(false); // 봇 말하기 상태 초기화
     lastSpokenMessageId.current = null; // 대화 초기화 시 마지막 음성 메시지 ID도 초기화
   };
 
@@ -72,14 +74,14 @@ export default function HomePage() {
 
   // 사용자가 말을 멈췄을 때 (마이크가 꺼졌을 때) 자동으로 다시 시작
   useEffect(() => {
-    if (voiceMode && !isListening && !loading) {
+    if (voiceMode && !isListening && !loading && !isBotSpeaking) {
       const timeoutId = setTimeout(() => {
         startListening();
       }, 100); // 짧은 지연 후 다시 시작
 
       return () => clearTimeout(timeoutId); // 클린업
     }
-  }, [voiceMode, isListening, loading, startListening]);
+  }, [voiceMode, isListening, loading, isBotSpeaking, startListening]);
 
   useEffect(() => {
     if (messages.length > 0 && messages[messages.length - 1].sender === "bot") {
@@ -94,17 +96,19 @@ export default function HomePage() {
       const textToSpeak = botMessageText.replace(/(\*\*|\*|_|`|~|#)/g, "");
       console.log("Voice mode status before speaking:", voiceMode);
       if (voiceMode) {
+        setIsBotSpeaking(true); // 봇이 말하기 시작
         speak(textToSpeak, () => {
           if (voiceMode) {
             setTimeout(() => {
               startListening();
             }, 500); // 0.5초 지연
           }
+          setIsBotSpeaking(false); // 봇이 말하기 종료
         });
         lastSpokenMessageId.current = currentBotMessage.id; // 현재 메시지를 마지막으로 음성 출력된 메시지로 기록
       }
     }
-  }, [messages, speak, startListening]); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, voiceMode, speak, startListening, setIsBotSpeaking]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   const handleVoiceInput = () => {
     const newVoiceMode = !voiceMode;
