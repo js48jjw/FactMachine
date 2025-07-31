@@ -59,7 +59,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
   return (
     <>  
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 pb-40">
         {messages.length === 0 ? (
           <div className="flex flex-1 min-h-[40vh] items-center justify-center">
             <span className="text-center text-gray-400 text-xl">대화를 시작해보세요!</span>

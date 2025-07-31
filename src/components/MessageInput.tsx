@@ -25,12 +25,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ value, onChange, onSend, di
     }
   }, [disabled]);
 
+  const placeholderText = typeof window !== 'undefined' && window.innerWidth <= 768 ? "메시지 입력..." : "메시지를 입력하세요...";
+
   return (
     <div className="flex w-full items-center gap-2">
       <textarea
         ref={textareaRef}
         className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none min-h-[44px] max-h-40 text-base"
-        placeholder="메시지를 입력하세요..."
+        placeholder={placeholderText}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
