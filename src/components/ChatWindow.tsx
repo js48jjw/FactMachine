@@ -3,7 +3,7 @@ import MessageInput from "./MessageInput";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Spinner from "./ui/Spinner";
-import TitleHeader from "./TitleHeader";
+
 
 export interface Message {
   id: number;
