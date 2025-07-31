@@ -129,6 +129,12 @@ export function useVoice() {
     window.speechSynthesis.speak(utter);
   };
 
+  const stopSpeaking = (): void => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
   return {
     isListening,
     transcript,
@@ -136,5 +142,6 @@ export function useVoice() {
     startListening,
     stopListening,
     speak,
+    stopSpeaking,
   };
 }

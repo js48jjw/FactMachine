@@ -15,13 +15,14 @@ export default function HomePage() {
   const [copyNotice, setCopyNotice] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-  const { isListening, transcript, setTranscript, startListening, stopListening, speak } = useVoice();
+  const { isListening, transcript, setTranscript, startListening, stopListening, speak, stopSpeaking } = useVoice();
 
   const resetConversation = () => {
     setMessages([]);
     setMsgId(0);
     setFeedback({});
     stopListening();
+    stopSpeaking(); // 음성 모드 초기화 시 음성 합성 중단
     setVoiceMode(false);
   };
 
@@ -57,7 +58,7 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  }, [messages, msgId]);
+  }, [messages, msgId]); // stopSpeaking 추가
 
   useEffect(() => {
     if (transcript && !loading) {
@@ -74,12 +75,14 @@ export default function HomePage() {
       if (voiceMode) {
         speak(textToSpeak, () => {
           if (voiceMode) {
-            startListening();
+            setTimeout(() => {
+              startListening();
+            }, 500); // 0.5초 지연
           }
         });
       }
     }
-  }, [messages, voiceMode, speak, startListening]);
+  }, [messages, speak, startListening]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   const handleVoiceInput = () => {
     const newVoiceMode = !voiceMode;
@@ -88,6 +91,7 @@ export default function HomePage() {
       startListening();
     } else {
       stopListening();
+      stopSpeaking(); // 음성 모드 비활성화 시 음성 합성 중단
     }
   };
 
