@@ -108,7 +108,7 @@ export default function HomePage() {
         lastSpokenMessageId.current = currentBotMessage.id; // 현재 메시지를 마지막으로 음성 출력된 메시지로 기록
       }
     }
-  }, [messages, voiceMode, speak, startListening, setIsBotSpeaking]); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, voiceMode, speak, startListening, setIsBotSpeaking, isBotSpeaking]);
 
   const handleVoiceInput = () => {
     const newVoiceMode = !voiceMode;

@@ -17,16 +17,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "메시지를 입력하세요." }, { status: 400 });
   }
 
-  // 현재 날짜 정보 추가
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const day = today.getDate();
-  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][today.getDay()];
-  const currentDateInfo = `오늘은 ${year}년 ${month}월 ${day}일 ${dayOfWeek}요일이야. 이 날짜를 기준으로 답변해.`;
+  // 현재 날짜와 시간 정보 추가
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const dayOfWeek = ["일", "월", "화", "수", "목", "금", "토"][now.getDay()];
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  const currentDateInfo = `오늘은 ${year}년 ${month}월 ${day}일 ${dayOfWeek}요일이고, 현재 시간은 ${hours}:${minutes}:${seconds}야. 이 정보를 기준으로 답변해.`;
 
   const SYSTEM_PROMPT = `${currentDateInfo}\n\n${SYSTEM_PROMPT_BASE}`;
-
 
   // 대화 이력 처리
   const historyContents = (Array.isArray(history) ? history : [])
@@ -37,14 +39,15 @@ export async function POST(req: NextRequest) {
     }));
 
   const contents = [
-    // 시스템 프롬프트는 대화 시작에 한 번만 주입하는 것이 더 효율적일 수 있음
-    // 여기서는 매번 요청에 포함하는 구조
-    { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
     ...historyContents,
     { role: "user", parts: [{ text: message }] },
   ];
 
   const body = {
+    systemInstruction: {
+      role: "system",
+      parts: [{ text: SYSTEM_PROMPT }]
+    },
     contents
   };
 
