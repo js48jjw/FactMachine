@@ -183,7 +183,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         <div className="mt-4 text-gray-400 text-sm text-center">
           팩트폭격기에게 맞더라도 당황하거나, 흥분하시면 안됩니다.
           <br />
-          @Fact Machine V0.1
+          @Fact Machine V1.1
         </div>
       </div>
     </>
