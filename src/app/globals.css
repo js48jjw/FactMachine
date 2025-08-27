@@ -238,7 +238,7 @@ input, button {
 }
 
 /* 모바일 광고 숨기기 */
-@media (max-width: 1024px) {
+@media (max-width: 800px) {
   .ad-container {
     display: none !important;
   }
