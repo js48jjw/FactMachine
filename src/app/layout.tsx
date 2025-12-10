@@ -38,20 +38,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             data-ad-height="600"
           ></ins>
           <Script src="//t1.daumcdn.net/kas/static/ba.min.js" strategy="afterInteractive" />
-          {/* 좌측카카오 밑 배너 (PC 전용) */}
-          <a
-            href="https://ui7gwmf8ww.sens.kr"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:block"
-            style={{ width: 160, marginTop: 12 }}
-          >
-            <img
-              src="/magabogam.png"
-              alt="magabogam 광고 배너"
-              style={{ width: 160, height: 'auto', display: 'block' }}
-            />
-          </a>
         </div>
         {/* 우측 고정 광고 */}
         <div className="ad-container" style={{
@@ -73,20 +59,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             data-ad-height="600"
           ></ins>
           <Script src="//t1.daumcdn.net/kas/static/ba.min.js" strategy="afterInteractive" />
-          {/* 우측카카오 밑 배너 (PC 전용) */}
-          <a
-            href="https://ui7gwmf8ww.sens.kr"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:block"
-            style={{ width: 160, marginTop: 12 }}
-          >
-            <img
-              src="/magabogam.png"
-              alt="malen365 광고 배너"
-              style={{ width: 160, height: 'auto', display: 'block' }}
-            />
-          </a>
         </div>
         {/* 메인 컨텐츠 */}
         {children}
